@@ -11,6 +11,18 @@
 
   <h1>My DSA Progress</h1>
 
+  <!-- 🔐 AUTH SECTION -->
+  <div>
+    <h3>Login</h3>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <br>
+
+  <!-- 📊 TABLE -->
   <table border="1">
     <thead>
       <tr>
@@ -18,12 +30,12 @@
         <th>Lecture Done</th>
         <th>Problems Solved</th>
         <th>Status</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody id="table-body"></tbody>
   </table>
 
-  <!-- Your JS file -->
   <script src="script.js"></script>
 
 </body>

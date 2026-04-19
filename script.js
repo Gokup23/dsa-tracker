@@ -13,15 +13,14 @@ async function fetchProgress() {
     .order('id', { ascending: true });
 
   if (error) {
-    console.error("Error fetching:", error);
+    console.error("Fetch error:", error);
     return;
   }
 
-  console.log("Data:", data);
   displayData(data);
 }
 
-// 🔹 DISPLAY DATA
+// 🔹 DISPLAY TABLE
 function displayData(data) {
   const tableBody = document.getElementById("table-body");
   tableBody.innerHTML = "";
@@ -51,14 +50,17 @@ function displayData(data) {
       </td>
 
       <td>
-        <button onclick="saveRow(${item.id})">Save</button>
+        <button class="save-btn" onclick="saveRow(${item.id})">Save</button>
       </td>
     `;
 
     tableBody.appendChild(row);
   });
+
+  checkUser(); // update UI based on login
 }
 
+// 🔹 SAVE ROW
 async function saveRow(id) {
   const lecture = document.getElementById(`lecture-${id}`).checked;
   const problems = parseInt(document.getElementById(`problems-${id}`).value);
@@ -75,12 +77,55 @@ async function saveRow(id) {
 
   if (error) {
     console.error("Save error:", error);
-    alert("Failed to save");
+    alert("Failed to save ❌");
   } else {
-    console.log("Saved!");
-    alert("Saved successfully ✅");
+    alert("Saved ✅");
   }
 }
 
+// 🔐 LOGIN
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await client.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+  } else {
+    alert("Logged in ✅");
+  }
+}
+
+// 🔐 LOGOUT
+async function logout() {
+  await client.auth.signOut();
+  alert("Logged out");
+}
+
+// 🔐 CHECK USER (NEW METHOD)
+async function checkUser() {
+  const { data } = await client.auth.getSession();
+
+  const session = data.session;
+
+  const isLoggedIn = !!session;
+
+  // show/hide save buttons
+  document.querySelectorAll(".save-btn").forEach(btn => {
+    btn.style.display = isLoggedIn ? "inline-block" : "none";
+  });
+}
+
+// 🔐 AUTO LISTEN (IMPORTANT)
+client.auth.onAuthStateChange(() => {
+  checkUser();
+});
+
 // 🔹 INITIAL LOAD
 fetchProgress();
+checkUser();
