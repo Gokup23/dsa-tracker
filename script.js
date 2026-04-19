@@ -13,15 +13,15 @@ async function fetchProgress() {
     .order('id', { ascending: true });
 
   if (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching:", error);
     return;
   }
 
-  console.log("Fetched data:", data);
+  console.log("Data:", data);
   displayData(data);
 }
 
-// 🔹 DISPLAY DATA (EDITABLE TABLE)
+// 🔹 DISPLAY DATA
 function displayData(data) {
   const tableBody = document.getElementById("table-body");
   tableBody.innerHTML = "";
@@ -35,7 +35,7 @@ function displayData(data) {
       <td>
         <input 
           type="checkbox" 
-          ${item.lecture_done ? "checked" : ""} 
+          ${item.LectureDone ? "checked" : ""} 
           onchange="updateLecture(${item.id}, this.checked)"
         >
       </td>
@@ -43,7 +43,7 @@ function displayData(data) {
       <td>
         <input 
           type="number" 
-          value="${item.problems_solved}" 
+          value="${item.problemsSolved}" 
           onchange="updateProblems(${item.id}, this.value)"
         >
       </td>
@@ -55,29 +55,29 @@ function displayData(data) {
   });
 }
 
-// 🔹 UPDATE LECTURE DONE
+// 🔹 UPDATE LECTURE
 async function updateLecture(id, value) {
   const { error } = await client
     .from('progress')
-    .update({ lecture_done: value })
+    .update({ LectureDone: value }) // ✅ EXACT NAME
     .eq('id', id);
 
   if (error) {
-    console.error("Update error (lecture):", error);
+    console.error("Lecture update error:", error);
   } else {
     console.log("Lecture updated!");
   }
 }
 
-// 🔹 UPDATE PROBLEMS SOLVED
+// 🔹 UPDATE PROBLEMS
 async function updateProblems(id, value) {
   const { error } = await client
     .from('progress')
-    .update({ problems_solved: parseInt(value) })
+    .update({ problemsSolved: parseInt(value) }) // ✅ EXACT NAME
     .eq('id', id);
 
   if (error) {
-    console.error("Update error (problems):", error);
+    console.error("Problems update error:", error);
   } else {
     console.log("Problems updated!");
   }
