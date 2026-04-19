@@ -22,3 +22,21 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 console.log("Firebase connected successfully ✅");
+
+db.collection("progress").onSnapshot((snapshot) => {
+  const body = document.getElementById("tracker-body");
+  body.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+
+    body.innerHTML += `
+      <tr>
+        <td>${doc.id}</td>
+        <td>${data.lectureDone ? "✅" : "❌"}</td>
+        <td>${data.problemsSolved}</td>
+        <td>${data.status}</td>
+      </tr>
+    `;
+  });
+});
