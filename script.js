@@ -1,42 +1,42 @@
-const firebaseConfig = {
+// 🔹 STEP 1: ADD YOUR CREDENTIALS
+const SUPABASE_URL = "https://xezqyxnbfsdtkxwpmwaf.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlenF5eG5iZnNkdGt4d3Btd2FmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1OTEwOTgsImV4cCI6MjA5MjE2NzA5OH0.OEMLXsfS3P12ODBFBfCdpIjLu8YAaI05AcSSkEVh7As";
 
-  apiKey: "AIzaSyAwuZlzcpymLKuLY62cEm5WDk7IsdYYTDM",
+// 🔹 STEP 2: CREATE CLIENT
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  authDomain: "dsa-tracking.firebaseapp.com",
+// 🔹 STEP 3: FETCH DATA
+async function fetchProgress() {
+  const { data, error } = await supabase
+    .from('progress')
+    .select('*');
 
-  projectId: "dsa-tracking",
+  if (error) {
+    console.error("Error fetching data:", error);
+    return;
+  }
 
-  storageBucket: "dsa-tracking.firebasestorage.app",
+  console.log("Fetched data:", data);
+  displayData(data);
+}
 
-  messagingSenderId: "268678274250",
+// 🔹 STEP 4: DISPLAY DATA
+function displayData(data) {
+  const tableBody = document.getElementById("table-body");
+  tableBody.innerHTML = "";
 
-  appId: "1:268678274250:web:0a47bce2db68791cc92833",
-
-  measurementId: "G-X7NX1BMMPX"
-
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-console.log("Firebase connected successfully ✅");
-
-db.collection("progress").onSnapshot((snapshot) => {
-  const body = document.getElementById("tracker-body");
-  body.innerHTML = "";
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-
-    body.innerHTML += `
+  data.forEach(item => {
+    const row = `
       <tr>
-        <td>${doc.id}</td>
-        <td>${data.lectureDone ? "✅" : "❌"}</td>
-        <td>${data.problemsSolved}</td>
-        <td>${data.status}</td>
+        <td>${item.topic}</td>
+        <td>${item.lectureDone ? "✅" : "❌"}</td>
+        <td>${item.problemsSolved}</td>
+        <td>${item.status}</td>
       </tr>
     `;
+    tableBody.innerHTML += row;
   });
-});
+}
+
+// 🔹 STEP 5: CALL FUNCTION
+fetchProgress();

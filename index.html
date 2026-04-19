@@ -1,26 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>DSA Tracker</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>DSA Progress Tracker</title>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-  <h1>📊 My DSA Journey</h1>
+  <h1>My DSA Progress</h1>
 
-  <button id="login">Login</button>
-
-  <table>
+  <table border="1">
     <thead>
       <tr>
         <th>Topic</th>
-        <th>Lecture</th>
-        <th>Problems</th>
+        <th>Lecture Done</th>
+        <th>Problems Solved</th>
         <th>Status</th>
       </tr>
     </thead>
-<tbody id="tracker-body"></tbody>
+    <tbody id="table-body"></tbody>
   </table>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Your JS file -->
+  <script src="script.js"></script>
+
 </body>
 </html>
