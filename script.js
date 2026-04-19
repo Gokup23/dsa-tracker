@@ -31,55 +31,54 @@ function displayData(data) {
 
     row.innerHTML = `
       <td>${item.topic}</td>
-      
+
       <td>
-        <input 
-          type="checkbox" 
-          ${item.LectureDone ? "checked" : ""} 
-          onchange="updateLecture(${item.id}, this.checked)"
-        >
+        <input type="checkbox" id="lecture-${item.id}" 
+          ${item.LectureDone ? "checked" : ""}>
       </td>
-      
+
       <td>
-        <input 
-          type="number" 
-          value="${item.problemsSolved}" 
-          onchange="updateProblems(${item.id}, this.value)"
-        >
+        <input type="number" id="problems-${item.id}" 
+          value="${item.problemsSolved}">
       </td>
-      
-      <td>${item.status}</td>
+
+      <td>
+        <select id="status-${item.id}">
+          <option ${item.status === "Not Started" ? "selected" : ""}>Not Started</option>
+          <option ${item.status === "In Progress" ? "selected" : ""}>In Progress</option>
+          <option ${item.status === "Done" ? "selected" : ""}>Done</option>
+        </select>
+      </td>
+
+      <td>
+        <button onclick="saveRow(${item.id})">Save</button>
+      </td>
     `;
 
     tableBody.appendChild(row);
   });
 }
 
-// 🔹 UPDATE LECTURE
-async function updateLecture(id, value) {
+async function saveRow(id) {
+  const lecture = document.getElementById(`lecture-${id}`).checked;
+  const problems = parseInt(document.getElementById(`problems-${id}`).value);
+  const status = document.getElementById(`status-${id}`).value;
+
   const { error } = await client
     .from('progress')
-    .update({ LectureDone: value }) // ✅ EXACT NAME
+    .update({
+      LectureDone: lecture,
+      problemsSolved: problems,
+      status: status
+    })
     .eq('id', id);
 
   if (error) {
-    console.error("Lecture update error:", error);
+    console.error("Save error:", error);
+    alert("Failed to save");
   } else {
-    console.log("Lecture updated!");
-  }
-}
-
-// 🔹 UPDATE PROBLEMS
-async function updateProblems(id, value) {
-  const { error } = await client
-    .from('progress')
-    .update({ problemsSolved: parseInt(value) }) // ✅ EXACT NAME
-    .eq('id', id);
-
-  if (error) {
-    console.error("Problems update error:", error);
-  } else {
-    console.log("Problems updated!");
+    console.log("Saved!");
+    alert("Saved successfully ✅");
   }
 }
 
