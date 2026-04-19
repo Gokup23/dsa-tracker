@@ -22,16 +22,49 @@ function displayData(data) {
   tableBody.innerHTML = "";
 
   data.forEach(item => {
-    const row = `
-      <tr>
-        <td>${item.topic}</td>
-        <td>${item.lectureDone ? "✅" : "❌"}</td>
-        <td>${item.problemsSolved}</td>
-        <td>${item.status}</td>
-      </tr>
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${item.topic}</td>
+      <td>
+        <input type="checkbox" ${item.lectureDone ? "checked" : ""} 
+          onchange="updateLecture(${item.id}, this.checked)">
+      </td>
+      <td>
+        <input type="number" value="${item.problemsSolved}" 
+          onchange="updateProblems(${item.id}, this.value)">
+      </td>
+      <td>${item.status}</td>
     `;
-    tableBody.innerHTML += row;
+
+    tableBody.appendChild(row);
   });
+}
+
+async function updateLecture(id, value) {
+  const { error } = await client
+    .from('progress')
+    .update({ lectureDone: value })
+    .eq('id', id);
+
+  if (error) {
+    console.error("Update error:", error);
+  } else {
+    console.log("Lecture updated!");
+  }
+}
+
+async function updateProblems(id, value) {
+  const { error } = await client
+    .from('progress')
+    .update({ problemsSolved: parseInt(value) })
+    .eq('id', id);
+
+  if (error) {
+    console.error("Update error:", error);
+  } else {
+    console.log("Problems updated!");
+  }
 }
 
 fetchProgress();
